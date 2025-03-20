@@ -9,7 +9,8 @@ import { useUser } from './lib/context/user';
 
 function App() {
 
-  const isLogginPage = window.location.pathName = '/login'; 
+  // const isLogginPage = window.location.pathName = '/login'; 
+  const isLogginPage = window.location.pathName === '/login';
 
 
   return (
@@ -17,9 +18,7 @@ function App() {
     <div>
     <UserProvider>
     <IdeasProvider>
-
     <Navbar/>   
-    
     <main>
       {isLogginPage ? <Login /> : <Home />}
     </main>
@@ -38,12 +37,18 @@ const Navbar = () => {
 
   const user = useUser(); 
 
+  console.log('this is the user on APP PAGE!!', user); 
+
+return(
+
+  <nav>
   {user.current ? ( 
 
     <>
         <span>{user.current.email} </span>
         {/* Add in the logout button here */}
         <button
+
         type='button'
         onClick={() => {
 
@@ -59,10 +64,12 @@ const Navbar = () => {
 
 ) : (
 
-    <a href='/login'>Login</a>
+    <a href='/login' style={{outline: '54px solid lime'}} >Login</a>
 
 
 )}; 
+</nav>
+)
 
 
 }

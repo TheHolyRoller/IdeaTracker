@@ -11,31 +11,27 @@ export function useUser() {
 export function UserProvider(props) {
   const [user, setUser] = useState(null);
 
+
+
   async function login(email, password) {
-
-    // Check if the user is already logged in here 
-    const session = await account.get(); 
-
-    if(session){
-
-      console.error('session found!! Logging you out first'); 
-      await logout(); 
-
+    try {
+      await account.get();
+      console.error('session found!! Logging you out first');
+      await logout();
+    } catch {
+      console.log('no session found');
     }
 
-    console.log('this is the session check in login function', session); 
-    try{
-      
-      const loggedIn = await account.createEmailPasswordSession(email, password);
+    try {
+      const loggedIn = await account.createEmailPasswordSession(
+        email,
+        password
+      );
       setUser(loggedIn);
-      window.location.replace("/");
+      window.location.replace('/');
+    } catch (error) {
+      console.error('could not login', error);
     }
-    catch(error){
-
-      console.error('could not login', error); 
-    }
-
-
   }
 
   async function logout() {
@@ -43,29 +39,21 @@ export function UserProvider(props) {
     setUser(null);
   }
 
-  async function register(email, password) {
-    
-    try{
-
-      // Check if there is already a session and a logged in user here 
-      const session = await account.get(); 
-
-      if(session){
-
-        console.log('User already logged in. Logging out first'); 
-        await logout(); 
-
-        console.log("Logged out now you can login or register "); 
+   async function register(email, password) {
+    try {
+      try {
+        await account.get();
+        console.error('session found!! Logging you out first');
+        await logout();
+      } catch {
+        console.log('no session found');
       }
 
       await account.create(ID.unique(), email, password);
       await login(email, password);
-
+    } catch (error) {
+      console.error('could not register', error);
     }
-    catch(error){
-      console.error('could not register', error); 
-    }
-   
   }
 
   async function init() {
